@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FloodGuard AI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+</head>
+
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        <span>◉</span>
+        FloodGuard <b>AI</b>
+    </div>
+
+    <nav>
+
+        <a href="#dashboard">Dashboard</a>
+        <a href="#simulation">Simulation</a>
+        <a href="#assistant">AI Assistant</a>
+
+    </nav>
+
+    <div class="status">
+
+        <span class="status-dot"></span>
+
+        SYSTEM ONLINE
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="eyebrow">
+            AI-POWERED URBAN WATERLOGGING INTELLIGENCE
+        </div>
+
+        <h1>
+            Know where the water
+            <span>will rise.</span>
+            Before it does.
+        </h1>
+
+        <p>
+            FloodGuard AI converts rainfall, terrain,
+            drainage and urbanisation data into
+            hyperlocal flood-risk predictions.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button
+                onclick="scrollToDashboard()"
+                class="primary-btn"
+            >
+                Explore Risk Map →
+            </button>
+
+            <button
+                onclick="runDemo()"
+                class="secondary-btn"
+            >
+                Run AI Prediction
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="hero-card">
+
+        <div class="card-top">
+
+            <span>LIVE RISK</span>
+
+            <span class="live-dot">
+                ● LIVE
+            </span>
+
+        </div>
+
+        <div class="big-risk" id="heroRisk">
+            78%
+        </div>
+
+        <div class="risk-label" id="heroCategory">
+            HIGH RISK
+        </div>
+
+        <div class="risk-location">
+            Delhi NCR
+        </div>
+
+        <div class="mini-bars">
+
+            <div>
+                <span>Rainfall</span>
+                <div class="bar">
+                    <i style="width: 84%"></i>
+                </div>
+            </div>
+
+            <div>
+                <span>Drainage stress</span>
+                <div class="bar">
+                    <i style="width: 71%"></i>
+                </div>
+            </div>
+
+            <div>
+                <span>Urbanisation</span>
+                <div class="bar">
+                    <i style="width: 88%"></i>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="stats">
+
+    <div class="stat">
+        <strong>6</strong>
+        <span>Monitored zones</span>
+    </div>
+
+    <div class="stat">
+        <strong>10</strong>
+        <span>Environmental factors</span>
+    </div>
+
+    <div class="stat">
+        <strong>AI</strong>
+        <span>Risk prediction</span>
+    </div>
+
+    <div class="stat">
+        <strong>AWS</strong>
+        <span>Cloud-ready architecture</span>
+    </div>
+
+</section>
+
+
+<section
+    class="dashboard-section"
+    id="dashboard"
+>
+
+    <div class="section-heading">
+
+        <div>
+
+            <div class="eyebrow">
+                COMMAND CENTER
+            </div>
+
+            <h2>
+                Hyperlocal Risk Map
+            </h2>
+
+        </div>
+
+        <select id="zoneSelect">
+
+            {% for zone in zones %}
+
+            <option value="{{ zone }}">
+                {{ zone }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+
+        <div class="map-card">
+
+            <div id="map"></div>
+
+        </div>
+
+
+        <div class="control-panel">
+
+            <div class="panel-title">
+                FLOOD RISK ENGINE
+            </div>
+
+
+            <label>
+                Simulated rainfall
+            </label>
+
+            <div class="rainfall-value">
+
+                <span id="rainfallValue">
+                    50
+                </span>
+
+                mm
+
+            </div>
+
+            <input
+                type="range"
+                id="rainfall"
+                min="0"
+                max="150"
+                value="50"
+            >
+
+
+            <div class="prediction">
+
+                <div class="prediction-score">
+
+                    <span id="riskScore">
+                        --
+                    </span>
+
+                    <small>%</small>
+
+                </div>
+
+                <div
+                    id="riskCategory"
+                    class="prediction-category"
+                >
+                    WAITING
+                </div>
+
+            </div>
+
+
+            <button
+                class="primary-btn full"
+                onclick="predictRisk()"
+            >
+                Predict Flood Risk
+            </button>
+
+
+            <div class="recommendations">
+
+                <h3>
+                    Recommended Actions
+                </h3>
+
+                <ul id="recommendations">
+
+                    <li>
+                        Run a prediction to generate
+                        recommendations.
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section
+    class="simulation"
+    id="simulation"
+>
+
+    <div class="section-heading">
+
+        <div>
+
+            <div class="eyebrow">
+                WHAT-IF ANALYSIS
+            </div>
+
+            <h2>
+                Simulate the Storm
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="scenario-grid">
+
+        <button onclick="setRainfall(20)">
+            <strong>20 mm</strong>
+            <span>Light rain</span>
+        </button>
+
+        <button onclick="setRainfall(50)">
+            <strong>50 mm</strong>
+            <span>Heavy rain</span>
+        </button>
+
+        <button onclick="setRainfall(80)">
+            <strong>80 mm</strong>
+            <span>Extreme rain</span>
+        </button>
+
+        <button onclick="setRainfall(120)">
+            <strong>120 mm</strong>
+            <span>Cloudburst</span>
+        </button>
+
+    </div>
+
+</section>
+
+
+<section
+    class="assistant-section"
+    id="assistant"
+>
+
+    <div class="assistant-card">
+
+        <div class="assistant-header">
+
+            <div>
+
+                <div class="eyebrow">
+                    ENVIRONMENTAL AI
+                </div>
+
+                <h2>
+                    Ask FloodGuard
+                </h2>
+
+            </div>
+
+            <div class="ai-badge">
+                AI
+            </div>
+
+        </div>
+
+
+        <div
+            class="chat"
+            id="chat"
+        >
+
+            <div class="message ai">
+
+                <strong>
+                    FloodGuard AI
+                </strong>
+
+                <p>
+                    Ask me why an area is risky,
+                    what you should do, or how rainfall
+                    changes the prediction.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+            <button onclick="askAI('Why is this area dangerous?')">
+                Why is this area dangerous?
+            </button>
+
+            <button onclick="askAI('What should I do?')">
+                What should I do?
+            </button>
+
+            <button onclick="askAI('How does rain affect risk?')">
+                How does rain affect risk?
+            </button>
+
+        </div>
+
+
+        <div class="chat-input">
+
+            <input
+                id="question"
+                placeholder="Ask FloodGuard..."
+                onkeydown="handleEnter(event)"
+            >
+
+            <button onclick="sendQuestion()">
+                →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <div>
+        <strong>FloodGuard AI</strong>
+        <span>
+            Predict. Prepare. Protect.
+        </span>
+    </div>
+
+    <div>
+        Built for Environmental Hacks · 2026
+    </div>
+
+</footer>
+
+
+</main>
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+<script
+    src="{{ url_for('static', filename='app.js') }}"
+></script>
+
+
+</body>
+
+</html>
